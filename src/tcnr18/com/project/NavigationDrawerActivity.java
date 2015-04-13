@@ -516,67 +516,15 @@ public class NavigationDrawerActivity extends Activity implements
 						int position, long id) {
 					TextView textView1 = (TextView) view
 							.findViewById(android.R.id.text1);
-					 TextView textView2 = (TextView) view
-					 .findViewById(android.R.id.text2);
-					Toast.makeText(getActivity(), textView1.getText()+" "+textView2.getText(), Toast.LENGTH_SHORT).show();
+					TextView textView2 = (TextView) view
+							.findViewById(android.R.id.text2);
+					Toast.makeText(getActivity(),
+							textView1.getText() + " " + textView2.getText(),
+							Toast.LENGTH_SHORT).show();
 				}
 			});
-			//
-			// listView.setOnItemClickListener(new
-			// AdapterView.OnItemClickListener() {
-			// @Override
-			// public void onItemClick(AdapterView<?> parent, View view,
-			// int position, long id) {
-			// TextView textView1 = (TextView) view
-			// .findViewById(android.R.id.text1);
-			// TextView textView2 = (TextView) view
-			// .findViewById(android.R.id.text2);
-			//
-			// //Log.d
-			// String check = textView2.getText().toString();
-			//
-			// if (!(check.indexOf("台北市") == 0 || check.indexOf("臺北市") == 0)) {
-			// Log.d(LOG_TAG, "before  @@@@@ " + check);
-			//
-			// check = "台北市" + check;
-			// Log.d(LOG_TAG, "after adding prefix 台北市 @@@@@ " + check);
-			//
-			// }
-			//
-			// int temp = check.indexOf("tel");
-			// if (temp > 0) {
-			// Log.d(LOG_TAG, "to remove tel, before  @@@@@ " + check);
-			//
-			// check = check.substring(0, temp);
-			// Log.d(LOG_TAG, "to remove tel, after  @@@@@ " + check);
-			//
-			// }
-			//
-			// // check=textView1.getText().toString()+", "+check;
-			// Log.d(LOG_TAG, "addr for map is " + check);
-			// String map = "http://maps.google.com/maps?q=" + check;
-			//
-			// // where check is the address string
-			//
-			// Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
-			//
-			// // NOT TO START MAP AT THIS MOMENT
-			// // startActivity(i);
-			// }
-			// });
-			// http://stackoverflow.com/questions/9987551/how-to-open-google-maps-using-address
-
-			// for title
-
-			// String planet =
-			// getResources().getStringArray(R.array.planets_array)[i];
-			//
-			// int imageId =
-			// getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-			// "drawable", getActivity().getPackageName());
-			// ImageView iv = ((ImageView) rootView.findViewById(R.id.image));
-			// iv.setImageResource(imageId);
-			// Resources res = getResources();
+		
+			// set title on fragment
 			String[] certification_category = getResources().getStringArray(
 					R.array.certification_category);
 			getActivity().setTitle(certification_category[selectedCategory]);
@@ -595,11 +543,11 @@ public class NavigationDrawerActivity extends Activity implements
 				String strJson = readRawJson(cat);
 
 				if (strJson == null || strJson.length() == 0) {
-					Log.d(LOG_TAG, "NO JSON");
+//					Log.d(LOG_TAG, "NO JSON");
 					return;
 				}
 
-				Log.d(LOG_TAG, "(first 50)input=" + strJson.substring(0, 50));
+//				Log.d(LOG_TAG, "(first 50)input=" + strJson.substring(0, 50));
 
 				JSONArray jsonArray = new JSONArray(strJson);
 				cVVector = new Vector<ContentValues>(jsonArray.length());
@@ -649,20 +597,15 @@ public class NavigationDrawerActivity extends Activity implements
 					String strDist = getDistrict(display_addr);
 					weatherValues
 							.put(TaipeiOkProvider.COLUMN_DISTRICT, strDist);
-					// Log.d(LOG_TAG, "strDist=" + strDist +
-					// " COLUMN_DISPLAY_ADDR=" + display_addr);
 					cVVector.add(weatherValues);
-
-					// Log.d(LOG_TAG, "json " + i + " is " + name);
 				}
 			} catch (JSONException e) {
-				// e.printStackTrace();
 				Log.d(LOG_TAG, "JSONException " + e.toString());
 			} catch (Exception e) {
 				Log.d(LOG_TAG, "Exception " + e.toString());
 			}
 
-			// add to database
+			// add to database in bulk
 			if (cVVector.size() > 0) {
 				String str = null;
 
@@ -677,15 +620,7 @@ public class NavigationDrawerActivity extends Activity implements
 				cVVector.toArray(cvArray);
 				int bulkCnt = getActivity().getContentResolver().bulkInsert(
 						TaipeiOkProvider.CONTENT_URI, cvArray);
-				Log.d(LOG_TAG, "bulk cnt= " + bulkCnt);
-
-				// delete old data so we don't build up an endless history
-				// getContentResolver().delete(OkProvider.CONTENT_URI,
-				// WeatherContract.WeatherEntry.COLUMN_DATE + " <= ?",
-				// new String[]
-				// {Long.toString(dayTime.setJulianDay(julianStartDay-1))});
-				// notifyWeather();
-				// getContentResolver().
+//				Log.d(LOG_TAG, "bulk cnt= " + bulkCnt);
 			}
 
 		}
