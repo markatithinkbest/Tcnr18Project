@@ -50,6 +50,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -70,45 +71,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-//import com.example.android.navigationdrawer.R;
-//Toast com.example.android.navigationdrawer.R;
-
-//import com.example.android.navigationdrawer.R;
-
-/**
- * This example illustrates a common usage of the DrawerLayout widget in the
- * Android support library.
- * <p/>
- * <p>
- * When a navigation (left) drawer is present, the host activity should detect
- * presses of the action bar's Up affordance as a signal to open and
- * org.apache.commons:commons-io:1.3.2close the navigation drawer. The
- * ActionBarDrawerToggle facilitates this behavior. Items within the drawer
- * should fall into one of two categories:
- * </p>
- * <p/>
- * <ul>
- * <li><strong>View switches</strong>. A view switch follows the same basic
- * policies as list or tab navigation in that a view switch does not create
- * navigation history. This pattern should only be used at the root activity of
- * a task, leaving some form of Up navigation active for activities further down
- * the navigation hierarchy.</li>
- * <li><strong>Selective Up</strong>. The drawer allows the user to choose an
- * alternate parent for Up navigation. This allows a user to jump across an
- * app's navigation hierarchy at will. The application should treat this as it
- * treats Up navigation from a different task, replacing the current task stack
- * using TaskStackBuilder or similar. This is the only form of navigation drawer
- * that should be used outside of the root activity of a task.</li>
- * </ul>
- * <p/>
- * <p>
- * Right side drawers should be used for actions, not navigation. This follows
- * the pattern established by the Action Bar that navigation should be to the
- * left and actions to the right. An action should be an operation performed on
- * the current contents of the window, for example enabling or disabling a data
- * overlay on top of the current content.
- * </p>
- */
 public class NavigationDrawerActivity extends Activity implements
 		PlanetAdapter.OnItemClickListener {
 
@@ -134,10 +96,7 @@ public class NavigationDrawerActivity extends Activity implements
 		setContentView(R.layout.activity_navigation_drawer);
 
 		//
-		//
-		// notifyGooglePlay();
 		notifyAppWebpage();
-		//
 		//
 		getRegId();
 
@@ -202,11 +161,10 @@ public class NavigationDrawerActivity extends Activity implements
 					regid = gcm.register(PROJECT_NUMBER);
 					msg = "Device registered, registration ID=" + regid;
 					// Toast.makeText(getApplicationContext(),
-					// "One time only, to send registration ID to App server, "+regid,Toast.LENGTH_SHORT).show();
-					Log.i(LOG_TAG, msg);
+					// Log.i(LOG_TAG, msg);
 
 					String result = readGcmInsertResult();
-					Log.i(LOG_TAG, "...readGcmInsertResult() " + result);
+					// Log.i(LOG_TAG, "...readGcmInsertResult() " + result);
 
 				} catch (IOException ex) {
 					msg = "Error :" + ex.getMessage();
@@ -219,8 +177,6 @@ public class NavigationDrawerActivity extends Activity implements
 
 			@Override
 			protected void onPostExecute(String msg) {
-
-				//
 			}
 		}.execute(null, null, null);
 	}
@@ -232,16 +188,10 @@ public class NavigationDrawerActivity extends Activity implements
 		}
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
-		// HttpGet httpGet = new
-		// HttpGet("https://bugzilla.mozilla.org/rest/bug?assigned_to=lhenry@mozilla.com");
-
-		// String str =
-		// "http://ithinkbest.com/taipeiokgcm/gcm_insert.php?reg_id=" + regid;
 		String str = "http://ithinkbest.com/tcnr18project/gcm_insert.php?reg_id="
 				+ regid;
-
 		HttpGet httpGet = new HttpGet(str);
-		Log.d(LOG_TAG, "new HttpGet(str) => " + str);
+		// Log.d(LOG_TAG, "new HttpGet(str) => " + str);
 		try {
 			HttpResponse response = client.execute(httpGet);
 			StatusLine statusLine = response.getStatusLine();
@@ -263,9 +213,7 @@ public class NavigationDrawerActivity extends Activity implements
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-
 			Log.d(LOG_TAG, "Exception " + e.toString());
-
 		}
 		return builder.toString();
 	}
@@ -326,16 +274,10 @@ public class NavigationDrawerActivity extends Activity implements
 			getContentResolver().delete(TaipeiOkProvider.CONTENT_URI, null,
 					null);
 			return true;
-		case R.id.action_debug:
-			doingDebug();
-			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	private void doingDebug() {
 	}
 
 	private void notifyGooglePlay() {
@@ -401,23 +343,16 @@ public class NavigationDrawerActivity extends Activity implements
 	}
 
 	private void selectItem(int position) {
+		Fragment fragment = TaipeiFragment.newInstance(position);
 
-		try {
-			// update the main content by replacing fragments
+		FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.replace(R.id.content_frame, fragment);
+		ft.commit();
 
-			Fragment fragment = TaipeiFragment.newInstance(position);
-
-			FragmentManager fragmentManager = getFragmentManager();
-			FragmentTransaction ft = fragmentManager.beginTransaction();
-			ft.replace(R.id.content_frame, fragment);
-			ft.commit();
-
-			// update selected item title, then close the drawer
-			setTitle(mPlanetTitles[position]);
-			mDrawerLayout.closeDrawer(mDrawerList);
-		} catch (Exception e) {
-			Log.d(LOG_TAG, "... selectItem is not yet ready @@@");
-		}
+		// update selected item title, then close the drawer
+		setTitle(mPlanetTitles[position]);
+		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
 	@Override
@@ -442,8 +377,7 @@ public class NavigationDrawerActivity extends Activity implements
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggls
-		
-		
+
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
@@ -467,7 +401,7 @@ public class NavigationDrawerActivity extends Activity implements
 		}
 
 		public static Fragment newInstance(int position) {
-			Log.d(LOG_TAG," ### Fragment newInstance, position="+position);
+			Log.d(LOG_TAG, " ### Fragment newInstance, position=" + position);
 			Fragment fragment = new TaipeiFragment();
 			Bundle args = new Bundle();
 			args.putInt(TaipeiFragment.ARG_PLANET_NUMBER, position);
@@ -520,27 +454,6 @@ public class NavigationDrawerActivity extends Activity implements
 					selectionArgs, sortOrder);
 		}
 
-		// private Cursor getListSummary(int cat) {
-		// // getActivity().getContentResolver().
-		//
-		//
-		// return null;
-		// // Uri uri = OkProvider.CONTENT_URI;
-		// // String[] projection = new String[]{OkProvider.COLUMN_ID,
-		// // OkProvider.COLUMN_NAME, OkProvider.COLUMN_DISPLAY_ADDR};
-		// // //
-		// // String selection
-		// =OkProvider.COLUMN_CERTIFICATION_CATEGORY+"=\""+OkProvider.CATXX[cat]+"\""
-		// ;
-		// //
-		// // String[] selectionArgs = null;
-		// // String sortOrder = OkProvider.COLUMN_DISPLAY_ADDR;
-		// //
-		// // return getActivity().managedQuery(uri, projection, selection,
-		// selectionArgs,
-		// // sortOrder);
-		// }
-
 		private Cursor getList(int cat, String district) {
 			Uri uri = TaipeiOkProvider.CONTENT_URI;
 			String[] projection = new String[] { TaipeiOkProvider.COLUMN_ID,
@@ -563,10 +476,6 @@ public class NavigationDrawerActivity extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-
-			// View rootView = inflater.inflate(R.layout.fragment_listview,
-			// container, false);
-			// ListView listView=(ListView)rootView.findViewById(R.id.listView);
 
 			Taipei_District = getResources().getStringArray(
 					R.array.taipei_district);
@@ -591,16 +500,6 @@ public class NavigationDrawerActivity extends Activity implements
 
 			spinner.setAdapter(spinnerAdapter);
 
-			// updateSpinner(selectedCategory);
-			// NOT TO UPDATE HERE
-			// processJson(selectedCategory);
-			// Intent i = new Intent(getActivity().getApplicationContext(),
-			// UpdateService.class);
-			// // potentially add data to the intent
-			// int[] cats = {selectedCategory};
-			// i.putExtra("CATS", cats);
-			// getActivity().getApplicationContext().startService(i);
-
 			Cursor mGrpMemberCursor = getList(selectedCategory);
 			getActivity().startManagingCursor(mGrpMemberCursor);
 			SimpleCursorAdapter adapter = new SimpleCursorAdapter(
@@ -611,48 +510,60 @@ public class NavigationDrawerActivity extends Activity implements
 							android.R.id.text1, android.R.id.text2 });
 
 			listView.setAdapter(adapter);
-
 			listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 					TextView textView1 = (TextView) view
 							.findViewById(android.R.id.text1);
-					TextView textView2 = (TextView) view
-							.findViewById(android.R.id.text2);
-
-					// String check = "臺北市松山區八德路四段138號B3F（京華城股份有限公司";
-
-					String check = textView2.getText().toString();
-					if (!(check.indexOf("台北市") == 0 || check.indexOf("臺北市") == 0)) {
-						Log.d(LOG_TAG, "before  @@@@@ " + check);
-
-						check = "台北市" + check;
-						Log.d(LOG_TAG, "after adding prefix 台北市 @@@@@ " + check);
-
-					}
-
-					int temp = check.indexOf("tel");
-					if (temp > 0) {
-						Log.d(LOG_TAG, "to remove tel, before  @@@@@ " + check);
-
-						check = check.substring(0, temp);
-						Log.d(LOG_TAG, "to remove tel, after  @@@@@ " + check);
-
-					}
-
-					// check=textView1.getText().toString()+", "+check;
-					Log.d(LOG_TAG, "addr for map is " + check);
-					String map = "http://maps.google.com/maps?q=" + check;
-
-					// where check is the address string
-
-					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
-
-					// NOT TO START MAP AT THIS MOMENT
-					// startActivity(i);
+					 TextView textView2 = (TextView) view
+					 .findViewById(android.R.id.text2);
+					Toast.makeText(getActivity(), textView1.getText()+" "+textView2.getText(), Toast.LENGTH_SHORT).show();
 				}
 			});
+			//
+			// listView.setOnItemClickListener(new
+			// AdapterView.OnItemClickListener() {
+			// @Override
+			// public void onItemClick(AdapterView<?> parent, View view,
+			// int position, long id) {
+			// TextView textView1 = (TextView) view
+			// .findViewById(android.R.id.text1);
+			// TextView textView2 = (TextView) view
+			// .findViewById(android.R.id.text2);
+			//
+			// //Log.d
+			// String check = textView2.getText().toString();
+			//
+			// if (!(check.indexOf("台北市") == 0 || check.indexOf("臺北市") == 0)) {
+			// Log.d(LOG_TAG, "before  @@@@@ " + check);
+			//
+			// check = "台北市" + check;
+			// Log.d(LOG_TAG, "after adding prefix 台北市 @@@@@ " + check);
+			//
+			// }
+			//
+			// int temp = check.indexOf("tel");
+			// if (temp > 0) {
+			// Log.d(LOG_TAG, "to remove tel, before  @@@@@ " + check);
+			//
+			// check = check.substring(0, temp);
+			// Log.d(LOG_TAG, "to remove tel, after  @@@@@ " + check);
+			//
+			// }
+			//
+			// // check=textView1.getText().toString()+", "+check;
+			// Log.d(LOG_TAG, "addr for map is " + check);
+			// String map = "http://maps.google.com/maps?q=" + check;
+			//
+			// // where check is the address string
+			//
+			// Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
+			//
+			// // NOT TO START MAP AT THIS MOMENT
+			// // startActivity(i);
+			// }
+			// });
 			// http://stackoverflow.com/questions/9987551/how-to-open-google-maps-using-address
 
 			// for title
