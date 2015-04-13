@@ -523,7 +523,7 @@ public class NavigationDrawerActivity extends Activity implements
 							Toast.LENGTH_SHORT).show();
 				}
 			});
-		
+
 			// set title on fragment
 			String[] certification_category = getResources().getStringArray(
 					R.array.certification_category);
@@ -543,11 +543,12 @@ public class NavigationDrawerActivity extends Activity implements
 				String strJson = readRawJson(cat);
 
 				if (strJson == null || strJson.length() == 0) {
-//					Log.d(LOG_TAG, "NO JSON");
+					// Log.d(LOG_TAG, "NO JSON");
 					return;
 				}
 
-//				Log.d(LOG_TAG, "(first 50)input=" + strJson.substring(0, 50));
+				// Log.d(LOG_TAG, "(first 50)input=" + strJson.substring(0,
+				// 50));
 
 				JSONArray jsonArray = new JSONArray(strJson);
 				cVVector = new Vector<ContentValues>(jsonArray.length());
@@ -620,7 +621,7 @@ public class NavigationDrawerActivity extends Activity implements
 				cVVector.toArray(cvArray);
 				int bulkCnt = getActivity().getContentResolver().bulkInsert(
 						TaipeiOkProvider.CONTENT_URI, cvArray);
-//				Log.d(LOG_TAG, "bulk cnt= " + bulkCnt);
+				// Log.d(LOG_TAG, "bulk cnt= " + bulkCnt);
 			}
 
 		}
@@ -641,14 +642,10 @@ public class NavigationDrawerActivity extends Activity implements
 		public String readRawJson(int cat) {
 			StringBuilder builder = new StringBuilder();
 			HttpClient client = new DefaultHttpClient();
-			// HttpGet httpGet = new
-			// HttpGet("https://bugzilla.mozilla.org/rest/bug?assigned_to=lhenry@mozilla.com");
-			// String str =
-			// "http://data.taipei.gov.tw/opendata/apply/json/QTdBNEQ5NkQtQkM3MS00QUI2LUJENTctODI0QTM5MkIwMUZE";
 			String str = TaipeiOkProvider.JSNXX[cat];
 
 			HttpGet httpGet = new HttpGet(str);
-			Log.d(LOG_TAG, "new HttpGet(str) => " + str);
+			// Log.d(LOG_TAG, "new HttpGet(str) => " + str);
 			try {
 				HttpResponse response = client.execute(httpGet);
 				StatusLine statusLine = response.getStatusLine();
@@ -663,16 +660,14 @@ public class NavigationDrawerActivity extends Activity implements
 						builder.append(line);
 					}
 				} else {
-					Log.e(LOG_TAG, "Failed to download file");
+					// Log.e(LOG_TAG, "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
-
-				Log.d(LOG_TAG, "Exception " + e.toString());
-
+				// Log.d(LOG_TAG, "Exception " + e.toString());
 			}
 			return builder.toString();
 		}
@@ -682,16 +677,13 @@ public class NavigationDrawerActivity extends Activity implements
 				int position, long id) {
 			try {
 				Resources res = getResources();
-				String[] taipei_district = res
-						.getStringArray(R.array.taipei_district);
-				// Log.d(LOG_TAG," position:"+position+
-				// " "+taipei_district[position]);
-				// String district=taipei_district[position].substring(4);
+//				String[] taipei_district = res
+//						.getStringArray(R.array.taipei_district);
 
 				TextView textView = (TextView) view
 						.findViewById(android.R.id.text1);
 				String strDist = textView.getText().toString();
-				Log.d(LOG_TAG, " textView:" + strDist);
+//				Log.d(LOG_TAG, " textView:" + strDist);
 
 				Cursor mGrpMemberCursor = getList(selectedCategory, strDist);
 				getActivity().startManagingCursor(mGrpMemberCursor);
@@ -704,7 +696,7 @@ public class NavigationDrawerActivity extends Activity implements
 
 				listView.setAdapter(adapter);
 			} catch (Exception e) {
-				Log.d(LOG_TAG, "onItemSelected, textView is null");
+//				Log.d(LOG_TAG, "onItemSelected, textView is null");
 
 			}
 		}
