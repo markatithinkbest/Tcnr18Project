@@ -14,9 +14,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 	}
-	  public void onClickLaunch(View view){
-   	   Intent intent = new Intent(this, NavigationDrawerActivity.class);
-       startActivity(intent);
-//       finish();
-   }
+
+	public void onClickLaunch(View view) {
+		Intent intent = new Intent(this, NavigationDrawerActivity.class);
+		startActivity(intent);
+	}
 }
