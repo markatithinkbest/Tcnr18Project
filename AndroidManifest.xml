@@ -33,7 +33,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>
             -->
         </activity>
         <!--
@@ -52,7 +52,7 @@
 
                    <category android:name="android.intent.category.LAUNCHER" />
                </intent-filter>
-           </activity>
+           </activity>
         -->
         <provider
             android:name=".TaipeiOkProvider"
@@ -74,17 +74,7 @@
             android:name=".ToAppWebpageActivity"
             android:label="@string/title_activity_result" >
         </activity>
-        <!--
-        <activity
-            android:name=".GcmRegister"
-            android:label="@string/title_activity_gcm_register" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
+ 
 
         <receiver
             android:name=".GcmBroadcastReceiver"
